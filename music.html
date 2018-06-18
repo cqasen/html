@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>大地吧</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <link rel="stylesheet" href="js/skin/layer.css">
+    <style type="text/css">
+        #my_player .ion {
+            margin: 5px 10px;
+            font-size: 22px;
+            border-radius: 20px;
+            border: 1px solid #FFCD32;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            color: #FFCD32;
+        }
+
+        @-webkit-keyframes rotation {
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        .rotation {
+            -webkit-transform: rotate(360deg);
+            animation: rotation 3s linear infinite;
+            -moz-animation: rotation 3s linear infinite;
+            -webkit-animation: rotation 3s linear infinite;
+            -o-animation: rotation 3s linear infinite;
+        }
+
+        .pause {
+            animation-play-state: paused;
+            -webkit-animation-play-state: paused;
+        }
+
+        /*横条样式*/
+        input[type=range] {
+            -webkit-appearance: none; /*清除系统默认样式*/
+            width: 100%;
+            background: -webkit-linear-gradient(#61bd12, #61bd12) no-repeat, #ddd; /*设置左边颜色为#61bd12，右边颜色为#ddd*/
+            height: 3px; /*横条的高度*/
+        }
+
+        /*时间线*/
+        .time-range input[type=range] {
+            background-size: 0% 100%; /*设置左右宽度比例*/
+        }
+
+        /*音量*/
+        .volume-range input[type=range] {
+            background-size: 50% 100%; /*设置左右宽度比例*/
+        }
+
+        /*拖动块的样式*/
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; /*清除系统默认样式*/
+            height: 18px; /*拖动块高度*/
+            width: 18px; /*拖动块宽度*/
+            background: #fff; /*拖动块背景*/
+            border-radius: 50%; /*外观设置为圆形*/
+            border: solid 1px #ddd; /*设置边框*/
+        }
+
+        .volume-range {
+            display: inline-flex;
+            /*width: 80px;*/
+        }
+
+        #volume-control {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">大地吧</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="video.html">视频 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="music.html">音乐</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <div class="card mt-3">
+        <div class="card-header">
+            音乐在线
+        </div>
+        <div class="card-body">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row" id="my_player">
+                        <audio src="" id="my_audio"></audio>
+                        <div class="col-md-12 timeline-operators">
+                                        <span class="time-range">
+                                            <input id="player-time-line" type="range" value="0" name="timeline"
+                                                   step="0.01"
+                                                   min="0" max="100"/>
+                                        </span>
+                        </div>
+
+                        <div class="col-md-12 play-operators">
+                            <i class="ion ion-skip-backward" id="pre-control"></i>
+                            <i class="ion ion-play" id="player-control" data-songid="" data-index=""></i>
+                            <i class="ion ion-skip-forward" id="next-control"></i>
+                            <i class="ion-ios-volume-high" id="volume-control"></i>
+                            <span class="volume-range">
+                                            <input id="player-volume" type="range" value="0.5" name="volume" step="0.01"
+                                                   min="0" max="1"/>
+                                        </span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <div id="lyricContainer"></div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer">
+
+            <div class="row">
+                <div class="col-md-12">
+
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="keyword" id="keyword" aria-describedby="helpId"
+                               placeholder="请输入歌手名或者歌曲名">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" id="music_search">搜索</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--</div>-->
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            歌曲列表
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group" id="music_list">
+
+                            </div>
+                        </div>
+                        <div class="card-footer" style="display: none" id="page_pagination">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li class="page-item disabled" id="page_previous">
+                                        <a class="page-link" href="javascript:void(0);" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" id="page_next">
+                                        <a class="page-link" href="javascript:void(0);" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!--<div class="container">-->
+<!--<ul class="list-group">-->
+<!--<li class="list-group-item"><input type="checkbox" > <a href="#">Cras justo odio</a></li>-->
+<!--<li class="list-group-item"><input type="checkbox" > <a href="#">Cras justo odio</a></li>-->
+<!--<li class="list-group-item"><input type="checkbox" > <a href="#">Cras justo odio</a></li>-->
+<!--<li class="list-group-item"><input type="checkbox" > <a href="#">Cras justo odio</a></li>-->
+<!--<li class="list-group-item"><input type="checkbox" > <a href="#">Cras justo odio</a></li>-->
+<!--<li class="list-group-item"><input type="checkbox" > <a href="#">Cras justo odio</a></li>-->
+
+<!--</ul>-->
+<!--</div>-->
+
+<script src="js/jquery.min.js"></script>
+<!--<script src="js/jquery.slim.min.js"></script>-->
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/layer.js"></script>
+<script>
+
+    var storage = window.localStorage;
+
+    var page_pagination_storage_key = 'page_pagination';
+    var select_music_list_storage_key = 'select_music_list';
+
+    //原来的音量
+    var oldVolume = 0.5;
+
+    var playMusicIndex = 0;
+
+
+    $(document).ready(function () {
+
+        //上一页
+        $("#page_pagination #page_previous").on('click', function () {
+
+            var page_pagination = getStorageItem(page_pagination_storage_key);
+            var page = page_pagination.page;
+            var totalpage = page_pagination.totalpage;
+            if (page === 1) {
+                layer.msg('这是第一页');
+                return false;
+            }
+
+            $("#page_next").removeClass("disabled");
+
+            page--;
+            var keyword = $("#keyword").val();
+            if (!keyword) {
+                layer.msg("请输入歌手名或者歌曲名");
+                return false;
+            }
+            layer.msg('上一页');
+            searchMusic(keyword, page);
+        });
+
+        //下一页
+        $("#page_pagination #page_next").on('click', function () {
+            var page_pagination = getStorageItem(page_pagination_storage_key);
+            var page = page_pagination.page;
+            var totalpage = page_pagination.totalpage;
+
+            if (page === totalpage) {
+                layer.msg('已经是最后一页了');
+                return false;
+            }
+
+            $("#page_previous").removeClass("disabled");
+
+            page++;
+            var keyword = $("#keyword").val();
+            if (!keyword) {
+                layer.msg("请输入歌手名或者歌曲名");
+                return false;
+            }
+            layer.msg('下一页');
+            searchMusic(keyword, page);
+
+        });
+
+
+        //点击搜索
+        $("#music_search").on('click', function () {
+            var keyword = $("#keyword").val();
+            if (!keyword) {
+                layer.msg("请输入歌手名或者歌曲名");
+                return false;
+            }
+            searchMusic(keyword, 1);
+        });
+
+        //点击列表的歌曲
+        $("#music_list").on('click', 'a', function () {
+
+            var index = $(this).index();
+            playMusicIndex = index;
+
+            var music_id = $(this).data('music-id');
+            var music_hash = $(this).data('music-hash');
+            $("#music_list a").each(function () {
+                $(this).removeClass("active");
+            });
+            $(this).addClass("active");
+            getPlayMusicInfoById(music_id, music_hash);
+        });
+
+        //音量
+        $("#player-volume").on('input propertychange', function () {
+            var volume = $(this).val();
+            oldVolume = volume;
+            setVolume(volume);
+        });
+
+        var isMute = false;
+
+        //点击静音/音量
+        $("#volume-control").on('change', function () {
+            if (isMute) {
+                setVolume(0);
+                isMute = false;
+            } else {
+                setVolume(oldVolume);
+                isMute = true;
+            }
+        });
+
+        //拖拽进度条
+        $("#player-time-line").on('change', function () {
+            var src = $("#my_audio").attr('src');
+            if (!src) {
+                layer.msg("您还未选择歌曲哟");
+                return false;
+            }
+
+            var player = $("#my_audio")[0];
+            var duration = player.duration;
+            var schedule = $(this).val();
+            var currentTime = duration * schedule / 100;
+
+            player.currentTime = currentTime;
+        });
+
+        //进度条
+        $("#my_audio").on('timeupdate', function (e) {
+            var player = $("#my_audio")[0];
+            var duration = player.duration;
+            var currentTime = e.currentTarget.currentTime;
+            var timeSchedule = currentTime / duration * 100;
+            var time_range = $(".time-range input[type=range]");
+
+            time_range.css("background-size", timeSchedule + "% 100%");
+            time_range.val(timeSchedule);
+
+            if (player.ended) {
+                autoPlay();
+            }
+        });
+
+        //播放/暂停
+        $("#player-control").on('click', function () {
+            var src = $("#my_audio").attr('src');
+            if (!src) {
+                layer.msg("您还未选择歌曲哟");
+                return false;
+            }
+            var player = $("#my_audio")[0];
+
+            if (player.paused) {
+                player.play();
+                $(this).removeClass('ion-play');
+                $(this).addClass('ion-ios-pause');
+
+            } else {
+                player.pause();
+                $(this).addClass('ion-play');
+                $(this).removeClass('ion-ios-pause');
+            }
+
+        });
+
+        //上一曲
+        $("#pre-control").on('click', function () {
+            autoPlay("pre");
+        });
+
+        $("#next-control").on('click', function () {
+            autoPlay();
+        });
+        //下一曲
+
+    });
+
+    function autoPlay(control='') {
+        var select_music_list = getStorageItem(select_music_list_storage_key);
+        var nextPlayMusicIndex = 0;
+        if (control == "pre") {
+            nextPlayMusicIndex = playMusicIndex - 1;
+        } else {
+            nextPlayMusicIndex = playMusicIndex + 1;
+        }
+
+        var music = select_music_list[nextPlayMusicIndex];
+
+        if (typeof (music) === 'undefined') {
+            layer.msg("您还未选择歌曲哟");
+            return false;
+        }
+
+        $("#music_list a").each(function () {
+            $(this).removeClass("active");
+        });
+        $("#music_list").find('a:eq(' + nextPlayMusicIndex + ')').addClass("active");
+
+        getPlayMusicInfoById(music.AlbumID, music.FileHash);
+
+        playMusicIndex = nextPlayMusicIndex;
+    }
+
+
+    /**
+     * 处理歌词
+     * @param text
+     * @returns {Array}
+     */
+    function parseLyric(text) {
+        //将文本分隔成一行一行，存入数组
+        var lines = text.split('\n'),
+                //用于匹配时间的正则表达式，匹配的结果类似[xx:xx.xx]
+                pattern = /\[\d{2}:\d{2}.\d{2}\]/g,
+                //保存最终结果的数组
+                result = [];
+        //去掉不含时间的行
+        while (!pattern.test(lines[0])) {
+            lines = lines.slice(1);
+        }
+
+        //上面用'\n'生成生成数组时，结果中最后一个为空元素，这里将去掉
+        lines[lines.length - 1].length === 0 && lines.pop();
+        lines.forEach(function (v /*数组元素值*/, i /*元素索引*/, a /*数组本身*/) {
+            //提取出时间[xx:xx.xx]
+            var time = v.match(pattern),
+                    //提取歌词
+                    value = v.replace(pattern, '');
+            //因为一行里面可能有多个时间，所以time有可能是[xx:xx.xx][xx:xx.xx][xx:xx.xx]的形式，需要进一步分隔
+            time.forEach(function (v1, i1, a1) {
+                //去掉时间里的中括号得到xx:xx.xx
+                var t = v1.slice(1, -1).split(':');
+                //将结果压入最终数组
+                result.push([parseInt(t[0], 10) * 60 + parseFloat(t[1]), value]);
+            });
+        });
+        //最后将结果数组中的元素按时间大小排序，以便保存之后正常显示歌词
+        result.sort(function (a, b) {
+            return a[0] - b[0];
+        });
+        return result;
+    }
+
+    /**
+     * 我的播放器
+     * @param play_url
+     * @param lyrics
+     */
+    function myPlayer(play_url, lyrics) {
+        var lyric_list = parseLyric(lyrics);
+
+        //显示歌词的元素
+        var lyricContainer = $("#lyricContainer");
+
+        var my_audio = $("#my_audio");
+        my_audio.prop('src', play_url);
+        my_audio.prop('autoplay', 'autoplay');
+        $("#player-control").removeClass('ion-play');
+        $("#player-control").addClass('ion-ios-pause');
+
+        my_audio.on('timeupdate', function (e) {
+            //遍历所有歌词，看哪句歌词的时间与当然时间吻合
+            for (var i = 0, l = lyric_list.length; i < l; i++) {
+                if (this.currentTime > lyric_list[i][0]) {
+                    //显示到页面
+                    lyricContainer.html(lyric_list[i][1]);
+                }
+
+            }
+        });
+    }
+
+    /**
+     * 设置音量
+     * @param volume
+     */
+    function setVolume(volume) {
+        var player = $("#my_audio")[0];
+        var volume_position = volume * 100;
+        var volume_range = $(".volume-range input[type=range]");
+
+        volume_range.css("background-size", volume_position + "% 100%");
+
+        var volume_control = $("#volume-control");
+        if (volume > 0) {
+            volume_control.removeClass("ion-ios-volume-low");
+            volume_control.addClass("ion-ios-volume-high");
+            volume_range.val(oldVolume);
+        } else {
+            volume_control.addClass("ion-ios-volume-low");
+            volume_control.removeClass("ion-ios-volume-high");
+            volume_range.val(0);
+        }
+        player.volume = volume;
+    }
+
+    /**
+     * 获取Storage数据
+     * @param key
+     */
+    function getStorageItem(key) {
+        var storage = window.localStorage;
+        var json_string = storage.getItem(key);
+        var json_object = JSON.parse(json_string);
+        return json_object;
+    }
+
+    /**
+     * 设置Storage存储
+     * @param key
+     * @param value
+     */
+    function setStorageItem(key, value) {
+        var storage = window.localStorage;
+        storage.setItem(key, JSON.stringify(value));
+    }
+
+    /**
+     * 搜索歌曲
+     * @param keyword
+     * @param page
+     */
+    function searchMusic(keyword, page) {
+        var url = "http://songsearch.kugou.com/song_search_v2?";
+        var data = {
+            keyword: keyword,
+            page: page,
+            pagesize: 10,
+            userid: -1,
+            clientver: '',
+            platform: 'WebFilter',
+            tag: 'em',
+            filter: 2,
+            iscorrection: 1,
+            privilege_filter: 0,
+        };
+
+        $.ajax(url, {
+            data: data,
+            dataType: 'jsonp',
+            crossDomain: true,
+            success: function (res) {
+                if (res.error_code) {
+                    layer.msg("很抱歉,没有找到相关的歌手或歌曲");
+                    return false;
+                }
+
+                var music_count = res.data.lists.length;
+
+                var musics = res.data.lists;
+                var music_list_html = '';
+                $("#music_list").html(music_list_html);
+                var select_music_list = new Array();
+                for (var i = 0; i < music_count; i++) {
+                    var music = musics[i];
+                    music_list_html += '<a href="javascript:void(0)" data-music-id="' + music.AlbumID + '" data-music-hash="' + music.FileHash + '" class="list-group-item list-group-item-action">' + music.FileName + '</a>';
+                    select_music_list.push({
+                        AlbumID: music.AlbumID,
+                        FileHash: music.FileHash,
+                        FileName: music.FileName
+                    });
+                }
+
+                setStorageItem(select_music_list_storage_key, select_music_list);
+
+
+                $("#music_list").html(music_list_html);
+
+
+                var total = res.data.total;
+                var page = res.data.page;
+                var pagesize = res.data.pagesize;
+                var totalpage = Math.ceil(total / pagesize);
+
+                setStorageItem(page_pagination_storage_key, {
+                    "total": total,
+                    "page": page,
+                    "pagesize": pagesize,
+                    "totalpage": totalpage,
+                    "keyword": keyword
+                });
+
+                var page_pagination = $("#page_pagination");
+                if (totalpage > 1) {
+                    page_pagination.show();
+                } else {
+                    page_pagination.hide();
+                }
+
+                if (page === 1) {
+                    $("#page_previous").addClass("disabled");
+                }
+
+                if (page === totalpage) {
+                    $("#page_next").addClass("disabled");
+                }
+
+            }
+        });
+    }
+
+    /**
+     * 获取某一首歌曲信息
+     * @param music_id
+     * @param music_hash
+     */
+    function getPlayMusicInfoById(music_id, music_hash) {
+        var url = "http://www.kugou.com/yy/index.php?r=play/getdata";
+        var timestamp = Date.parse(new Date());
+        var data = {
+            hash: music_hash,
+            album_id: music_id,
+            _: timestamp
+        };
+        $.ajax(url, {
+            data: data,
+            dataType: 'jsonp',
+            crossDomain: true,
+            success: function (res) {
+
+                if (res.error_code) {
+                    layer.msg("很抱歉,没有找到相关的歌手或歌曲");
+                    return false;
+                }
+
+                var poster_img = res.data.img;
+                var play_url = res.data.play_url;
+                var lyrics = res.data.lyrics;
+
+                myPlayer(play_url, lyrics);
+
+            }
+        });
+
+    }
+
+
+</script>
+
+</body>
+</html>
