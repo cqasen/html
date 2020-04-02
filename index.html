@@ -1,72 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>大地吧</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <style type="text/css">
-        #video {
-            height: 600px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>大地吧▪小森同学</title>
+    <meta name="keywords" content="小森同学,重庆,搜索开发工程师,ELK,PHP,Python,Golang,文本全文搜索,图片搜索,关键词纠错">
+    <meta name="description"
+          content="小森同学 重庆 搜索开发工程师 ELK(Elasticsearch Logstash Kibana) PHP Python Golang 文本全文搜索 图片搜索 关键词纠错等">
+    <meta name="author" content="小森同学">
+
+    <!-- Bootstrap core CSS -->
+    <link href="./bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./full-width-pics.css" rel="stylesheet">
+
 </head>
+
 <body>
 
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="index.html">大地吧</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="/">Dadiba</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="video.html">视频</a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">关于我
+                        <span class="sr-only">(current)</span>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="music.html">音乐</a>
-                </li>
-
             </ul>
         </div>
     </div>
 </nav>
 
+<!-- Header - set the background image for the header in the line below -->
+<header class="py-5 bg-image-full" style="background-image: url('0.jpg');">
+    <img class="img-fluid d-block mx-auto my-logo" src="./logo.jpg" alt="">
+</header>
 
-<div class="container">
-    <div class="card mt-3">
-        <div class="card-header">
-            搞笑视频
+<!-- Content section -->
+<section class="py-5">
+    <div class="container">
+        <h1>小森同学</h1>
+        <p class="lead text-dark">重庆</p>
+        <p>搜索开发工程师</p>
+        <div>
+            <ul>
+                <li>ELK</li>
+                <li>PHP</li>
+                <li>Python</li>
+                <li>Golang</li>
+                <li>文本全文搜索</li>
+                <li><a href="https://developer.aliyun.com/article/750481?spm=a2c6h.12883283.1362932.9.3c2d201cMDBORf" target="_blank">图片搜索</a></li>
+                <li>关键词纠错</li>
+                <li>相似关键词</li>
+            </ul>
         </div>
-        <div class="card-body">
-            <div id="video"></div>
-        </div>
-
     </div>
-</div>
+</section>
 
-<script src="js/jquery.slim.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/ckplayer/ckplayer.js" charset="UTF-8"></script>
+<!-- Image Section - set the background image for the header in the line below -->
+<section class="py-5 bg-image-full" style="background-image: url('1.jpg');">
+    <!-- Put anything you want here! There is just a spacer below for demo purposes! -->
+    <div style="height: 200px;"></div>
+</section>
+
+
+<!-- Footer -->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; 大地吧 2020</p>
+        <p class="m-0 text-center">
+            <a target="_blank" href="http://www.beian.miit.gov.cn" class="text-white">
+                渝ICP备15005402号-1
+            </a>
+        </p>
+    </div>
+    <!-- /.container -->
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="./jquery.min.js"></script>
+<script src="./bootstrap.bundle.min.js"></script>
 <script>
-    var videoObject = {
-        container: '#video',//“#”代表容器的ID，“.”或“”代表容器的class
-        variable: 'player',//该属性必需设置，值等于下面的new chplayer()的对象
-        autoplay: true,//自动播放
-        live: true,//直播视频形式
-        mobileCkControls: true,
-        poster: 'poster.jpg', //封面图片
-        video: 'rtmp://111.230.183.222:1935/myapp/test'
-    };
-    var player = new ckplayer(videoObject);
+    //百度主动推送
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    //百度统计
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?8c87b347082903e482f82389b1daa3c0";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
 </script>
 
 </body>
+
 </html>
