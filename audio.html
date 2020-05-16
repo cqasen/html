@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style type="text/css">
+    ul {
+        list-style-type: none;
+    }
+
+    ul li {
+        float: left;
+        margin: 0 10px;
+    }
+</style>
+<body>
+
+<ul>
+    <li><input type="button" data-txt="已确定"
+               onclick="message()" value="已确定">
+    </li>
+    <li><input type="button" data-txt="开始扫描，请稍等"
+               onclick="message()" value="开始扫描，请稍等">
+    </li>
+    <li><input type="button" data-txt="美团外卖自动接单咯，请注意查收" onclick="message()" value="美团外卖自动接单咯，请注意查收">
+    <li><input type="button" data-txt="你有新的订单，请注意查收" onclick="message()" value="你有新的订单，请注意查收">
+</ul>
+
+<script type="text/javascript">
+    function autoSoundPlay(txt) {
+        let url = "http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&text=" + encodeURI(txt)
+        let audio = new Audio()
+        audio.volume = 1
+        audio.src = url
+        audio.play()
+    }
+
+    function message() {
+        // //调用百度接口
+        let obj = document.elementFromPoint(event.clientX, event.clientY);
+        let txt = obj.attributes.getNamedItem('data-txt').value
+        autoSoundPlay(txt)
+
+    }
+
+</script>
+</body>
+</html>
